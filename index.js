@@ -19,7 +19,10 @@ function getTexts() {
 	return [
 		"This is a Pen.", 
 		"This is a Apple.", 
-		"Apple Pen."
+		"Apple pen.",
+		"Make America great again.",
+		"America is going to be strong again.",
+		"We are losing but start winning again"
 	];
 }
 
