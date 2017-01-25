@@ -22,7 +22,7 @@ function getTexts() {
 		"Apple pen.",
 		"Make America great again.",
 		"America is going to be strong again.",
-		"We are losing but start winning again"
+		"We are losing but start winning again."
 	];
 }
 
