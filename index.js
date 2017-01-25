@@ -56,8 +56,8 @@ function setIssue() {
 
 function setNextIssue() {
 	index += 1;
-	var length = getTexts();
-	if (index >= length) {
+	var array = getTexts();
+	if (index >= array.length) {
 		index = 0;
 	}
 	setIssue();
@@ -103,7 +103,6 @@ function start() {
 
 function next() {
 	setNextIssue();
-	start();
 }
 
 setIssue();
