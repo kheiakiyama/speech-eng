@@ -117,6 +117,10 @@ function start() {
     client.onIntentReceived = function (response) {
         setText(response);
     };
+
+    client.onError = function (response) {
+    	clearText();
+    };
 }
 
 function next() {
