@@ -6,7 +6,7 @@ label {
 }
 button {
 	font-size: 30px;
-	margin-top: 30px;
+	margin-top: 20px;
 }
 img {
 	margin-bottom: 20px;
@@ -32,8 +32,16 @@ img {
 	font-size: 30px;
 }
 #result {
-	margin-top: 30px;
 }
 #loading {
 	opacity: 0.5;
+}
+#progress {
+	margin-top: 20px;
+}
+#progress_bar {
+	transition-duration: 0;
+}
+#progress_bar.active {
+	transition-duration: 5s;
 }

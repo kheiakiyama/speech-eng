@@ -65,6 +65,11 @@
     </None>
     <None Include="Scripts\jquery-3.1.1.slim.min.map" />
     <None Include="Scripts\jquery-3.1.1.min.map" />
+    <None Include="fonts\glyphicons-halflings-regular.woff2" />
+    <None Include="Content\bootstrap.min.css.map" />
+    <None Include="Content\bootstrap.css.map" />
+    <None Include="Content\bootstrap-theme.min.css.map" />
+    <None Include="Content\bootstrap-theme.css.map" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="index.htm" />
@@ -82,6 +87,16 @@
     <Content Include="Scripts\jquery-3.1.1-vsdoc.js" />
     <Content Include="packages.config" />
     <Content Include="loading.gif" />
+    <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Scripts\bootstrap.js" />
+    <Content Include="fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\bootstrap.css" />
+    <Content Include="Content\bootstrap-theme.min.css" />
+    <Content Include="Content\bootstrap-theme.css" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

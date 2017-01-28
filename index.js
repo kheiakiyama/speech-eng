@@ -30,6 +30,7 @@ function clearText() {
     document.getElementById("user_answer").innerText = "(You say ...)";
     document.getElementById("output").value = "";
 	document.getElementById("result").innerText = "(Result)";
+	hide("loading");
 }
 
 function setText(text) {
@@ -76,6 +77,9 @@ function stop() {
 	started = false;
 	show("mic_off");
 	hide("mic_on");
+	$('#progress_bar')
+		.removeClass("active")
+		.css('width', '0%');
 }
 
 function start() {
@@ -93,6 +97,9 @@ function start() {
         getKey());
     client.startMicAndRecognition();
 	document.getElementById("result").innerText = "(Start!!)";
+	$('#progress_bar')
+		.addClass("active")
+		.css('width', '100%');
     setTimeout(function () {
         client.endMicAndRecognition();
 		show("loading");
