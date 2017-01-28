@@ -92,8 +92,10 @@ function start() {
         getLanguage(),
         getKey());
     client.startMicAndRecognition();
+	document.getElementById("result").innerText = "(Start!!)";
     setTimeout(function () {
         client.endMicAndRecognition();
+		show("loading");
 	    stop();
     }, 5000);
 
@@ -116,7 +118,6 @@ function next() {
 
 function sendResult(result) {
 	var question = getQuestion();
-	show("loading");
 	$.ajax({
 	    url: "https://speech-eng.azurewebsites.net/api/questions",
 	    type: "post",
