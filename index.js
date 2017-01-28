@@ -64,10 +64,18 @@ function setNextIssue() {
 	setQuestion();
 }
 
+function show(id) {
+	document.getElementById(id).className = "";
+}
+
+function hide(id) {
+	document.getElementById(id).className = "no-display";
+}
+
 function stop() {
 	started = false;
-	document.getElementById("mic_off").className = "";
-	document.getElementById("mic_on").className = "no-display";
+	show("mic_off");
+	hide("mic_on");
 }
 
 function start() {
@@ -75,8 +83,8 @@ function start() {
 		return;
 	}
 	started = true;
-	document.getElementById("mic_off").className = "no-display";
-	document.getElementById("mic_on").className = "";
+	hide("mic_off");
+	show("mic_on");
     var mode = getMode();
     clearText();
     client = Microsoft.CognitiveServices.SpeechRecognition.SpeechRecognitionServiceFactory.createMicrophoneClient(
@@ -108,6 +116,7 @@ function next() {
 
 function sendResult(result) {
 	var question = getQuestion();
+	show("loading");
 	$.ajax({
 	    url: "https://speech-eng.azurewebsites.net/api/questions",
 	    type: "post",
@@ -118,6 +127,7 @@ function sendResult(result) {
 		contentType: "application/json",
 	    processData: false,
 	    success: function(msg) {
+			hide("loading");
 	        console.log("answer success");
 	    }
 	});
