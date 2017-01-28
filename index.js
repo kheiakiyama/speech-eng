@@ -15,14 +15,14 @@ function getLanguage() {
     return "en-us";
 }
 
-function getTexts() {
+function getQuestions() {
 	return [
-		"This is a Pen.", 
-		"This is a Apple.", 
-		"Apple pen.",
-		"Make America great again.",
-		"America is going to be strong again.",
-		"We are losing but start winning again."
+		{ id: 1, sentence: "This is a Pen." }, 
+		{ id: 2, sentence: "This is a Apple." }, 
+		{ id: 3, sentence: "Apple pen." },
+		{ id: 4, sentence: "Make America great again." },
+		{ id: 5, sentence: "America is going to be strong again." },
+		{ id: 6, sentence: "We are losing but start winning again." }
 	];
 }
 
@@ -37,7 +37,8 @@ function setText(text) {
     var json = JSON.parse(text);
     if (json.length > 0) {
     	document.getElementById("user_answer").innerText = json[0].display;
-    	if (json[0].display === getIssue()) {
+		sendResult(json[0].display);
+    	if (json[0].display === getQuestion().sentence) {
 	    	document.getElementById("result").innerText = "Congratulations!!";
     	} else {
 	    	document.getElementById("result").innerText = "Oops!";
@@ -45,22 +46,22 @@ function setText(text) {
     }
 }
 
-function getIssue() {
-	return getTexts()[index];
+function getQuestion() {
+	return getQuestions()[index];
 }
 
-function setIssue() {
-    document.getElementById("correct_answer").innerText = getIssue();
+function setQuestion() {
+    document.getElementById("correct_answer").innerText = getQuestion().sentence;
     document.getElementById("user_answer").innerText = "(You say ...)";
 }
 
 function setNextIssue() {
 	index += 1;
-	var array = getTexts();
+	var array = getQuestions();
 	if (index >= array.length) {
 		index = 0;
 	}
-	setIssue();
+	setQuestion();
 }
 
 function stop() {
@@ -105,4 +106,21 @@ function next() {
 	setNextIssue();
 }
 
-setIssue();
+function sendResult(result) {
+	var question = getQuestion();
+	$.ajax({
+	    url: "https://speech-eng.azurewebsites.net/api/questions",
+	    type: "post",
+	    data: JSON.stringify({
+	    	id: question.id,
+	    	sentence: result
+	    }),
+		contentType: "application/json",
+	    processData: false,
+	    success: function(msg) {
+	        console.log("answer success");
+	    }
+	});
+}
+
+setQuestion();
