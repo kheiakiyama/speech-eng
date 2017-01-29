@@ -17,12 +17,12 @@ function getLanguage() {
 
 function getQuestions() {
 	return [
-		{ id: 1, sentence: "This is a Pen." }, 
-		{ id: 2, sentence: "This is a Apple." }, 
-		{ id: 3, sentence: "Apple pen." },
-		{ id: 4, sentence: "Make America great again." },
-		{ id: 5, sentence: "America is going to be strong again." },
-		{ id: 6, sentence: "We are losing but start winning again." }
+		{ id: 1, total: 10, correct: 5, sentence: "This is a Pen." }, 
+		{ id: 2, total: 8, correct: 6, sentence: "This is a Apple." }, 
+		{ id: 3, total: 10, correct: 7, sentence: "Apple pen." },
+		{ id: 4, total: 10, correct: 3, sentence: "Make America great again." },
+		{ id: 5, total: 14, correct: 5, sentence: "America is going to be strong again." },
+		{ id: 6, total: 10, correct: 9, sentence: "We are losing but start winning again." }
 	];
 }
 
@@ -52,8 +52,31 @@ function getQuestion() {
 }
 
 function setQuestion() {
-    document.getElementById("correct_answer").innerText = getQuestion().sentence;
+	var question = getQuestion();
+    document.getElementById("correct_answer").innerText = question.sentence;
     document.getElementById("user_answer").innerText = "(You say ...)";
+    var ctx = document.getElementById("chart");
+    var myPieChart = new Chart("chart",{
+	    type: 'pie',
+	    data: {
+	    	labels: ["OK", "NG"],
+	    	datasets: [{
+	    		data: [question.correct, question.total - question.correct],
+	    		backgroundColor: [
+	                "#36A2EB",
+	                "#FF6384"
+	            ],
+	            hoverBackgroundColor: [
+	                "#36A2EB",
+	                "#FF6384"
+	            ]
+	    	}]
+	    },
+	    animation:{
+	        animateScale:true
+	    },
+	    options: {}
+	});
 }
 
 function setNextIssue() {

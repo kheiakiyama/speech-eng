@@ -6,13 +6,23 @@
 	<link rel="stylesheet" href="index.css">
     <script src="Scripts/jquery-3.1.1.min.js" type="text/javascript"></script>
     <script src="Scripts/bootstrap.min.js" type="text/javascript"></script>
+	<script src="Scripts/Chart.min.js" type="text/javascript"></script>
     <script src="speech.1.0.0.js" type="text/javascript"></script>
 </head>
 <body style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif">
 	<section class="all container">
 		<section id="content">
-			<img id="mic_off" class="" src="./mic-off.png">
-			<img id="mic_on" class="no-display" src="./mic-on.png">
+			<section class="row">
+				<div class="col-md-4">
+				</div>
+				<div class="col-md-4">
+					<img id="mic_off" class="" src="./mic-off.png">
+					<img id="mic_on" class="no-display" src="./mic-on.png">
+				</div>
+				<span id="chart_area" class="col-md-2">
+					<canvas id="chart"></canvas>
+				</span>
+			</section>
 			<section>
 				<div>
 					<span id="correct_answer"></span>
