@@ -22,7 +22,7 @@ img {
   -webkit-transform: translate(-50%, -50%); /* Safari用 */
   transform: translate(-50%, -50%);
 }
-#try {
+#listen,#try {
 	margin-right: 30px;
 }
 #output {
@@ -44,4 +44,9 @@ img {
 }
 #progress_bar.active {
 	transition-duration: 5s;
+}
+#player {
+	display: block;
+    height: 30px;
+    width: 500px;
 }

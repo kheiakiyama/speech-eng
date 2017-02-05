@@ -15,17 +15,6 @@ function getLanguage() {
     return "en-us";
 }
 
-function getQuestions() {
-	return [
-		{ id: 1, total: 10, correct: 5, sentence: "This is a Pen." }, 
-		{ id: 2, total: 8, correct: 6, sentence: "This is a Apple." }, 
-		{ id: 3, total: 10, correct: 7, sentence: "Apple pen." },
-		{ id: 4, total: 10, correct: 3, sentence: "Make America great again." },
-		{ id: 5, total: 14, correct: 5, sentence: "America is going to be strong again." },
-		{ id: 6, total: 10, correct: 9, sentence: "We are losing but start winning again." }
-	];
-}
-
 function clearText() {
     document.getElementById("user_answer").innerText = "(You say ...)";
     document.getElementById("output").value = "";
@@ -39,7 +28,7 @@ function setText(text) {
     if (json.length > 0) {
     	document.getElementById("user_answer").innerText = json[0].display;
 		sendResult(json[0].display);
-    	if (json[0].display === getQuestion().sentence) {
+    	if (json[0].display === question.sentence) {
 	    	document.getElementById("result").innerText = "Congratulations!!";
     	} else {
 	    	document.getElementById("result").innerText = "Oops!";
@@ -47,45 +36,56 @@ function setText(text) {
     }
 }
 
-function getQuestion() {
-	return getQuestions()[index];
-}
+var currentTimeStamp = new Date();
+var question = {};
 
-function setQuestion() {
-	var question = getQuestion();
-    document.getElementById("correct_answer").innerText = question.sentence;
-    document.getElementById("user_answer").innerText = "(You say ...)";
-    var ctx = document.getElementById("chart");
-    var myPieChart = new Chart("chart",{
-	    type: 'pie',
+function getQuestionFromServer(callBack) {
+	show("loading");
+	$.ajax({
+	    url: "https://speech-eng.azurewebsites.net/api/questions",
+	    type: "get",
 	    data: {
-	    	labels: ["OK", "NG"],
-	    	datasets: [{
-	    		data: [question.correct, question.total - question.correct],
-	    		backgroundColor: [
-	                "#36A2EB",
-	                "#FF6384"
-	            ],
-	            hoverBackgroundColor: [
-	                "#36A2EB",
-	                "#FF6384"
-	            ]
-	    	}]
+	    	time: currentTimeStamp.toLocaleString()
 	    },
-	    animation:{
-	        animateScale:true
-	    },
-	    options: {}
+		contentType: "application/json",
+	    success: function(response) {
+			hide("loading");
+			question = response;
+			currentTimeStamp = response.time;
+	        console.log("get question success");
+	        callBack();
+	    }
 	});
 }
 
-function setNextIssue() {
-	index += 1;
-	var array = getQuestions();
-	if (index >= array.length) {
-		index = 0;
-	}
-	setQuestion();
+function setNextQuestion() {
+	getQuestionFromServer(function() {
+	    document.getElementById("correct_answer").innerText = question.sentence;
+	    document.getElementById("player").src = question.url;
+	    document.getElementById("user_answer").innerText = "(You say ...)";
+	    var ctx = document.getElementById("chart");
+	    var myPieChart = new Chart("chart",{
+		    type: 'pie',
+		    data: {
+		    	labels: ["OK", "NG"],
+		    	datasets: [{
+		    		data: [question.correct, question.total - question.correct],
+		    		backgroundColor: [
+		                "#36A2EB",
+		                "#FF6384"
+		            ],
+		            hoverBackgroundColor: [
+		                "#36A2EB",
+		                "#FF6384"
+		            ]
+		    	}]
+		    },
+		    animation:{
+		        animateScale:true
+		    },
+		    options: {}
+		});
+	});
 }
 
 function show(id) {
@@ -147,11 +147,10 @@ function start() {
 }
 
 function next() {
-	setNextIssue();
+	setNextQuestion();
 }
 
 function sendResult(result) {
-	var question = getQuestion();
 	$.ajax({
 	    url: "https://speech-eng.azurewebsites.net/api/questions",
 	    type: "post",
@@ -168,4 +167,8 @@ function sendResult(result) {
 	});
 }
 
-setQuestion();
+function listen() {
+	player.play();
+}
+
+setNextQuestion();
