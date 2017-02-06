@@ -102,6 +102,7 @@ function stop() {
 	hide("mic_on");
 	hide("done");
 	$('#progress_bar')
+//		.attr('transition-duration', 0)
 		.removeClass("active")
 		.css('width', '0%');
 }
@@ -124,11 +125,12 @@ function start() {
     client.startMicAndRecognition();
 	document.getElementById("result").innerText = "(Start!!)";
 	$('#progress_bar')
+//		.attr('transition-duration', (calcSpeechMilliSeconds() / 1000) + 's')
 		.addClass("active")
 		.css('width', '100%');
     setTimeout(function () {
     	done();
-    }, 5000);
+    }, calcSpeechMilliSeconds());
 
     client.onPartialResponseReceived = function (response) {
         setText(response);
@@ -145,6 +147,12 @@ function start() {
     client.onError = function (response) {
     	clearText();
     };
+}
+
+function calcSpeechMilliSeconds() {
+	var sentenceCount = (question.sentence.split(".").length - 1) + (question.sentence.split(",").length - 1);
+	//return 2000 + sentenceCount * 3000;
+	return 5000;
 }
 
 var sendedSpeech = false;
@@ -172,11 +180,10 @@ function sendResult(result) {
 	    	sentence: result
 	    }),
 		contentType: "application/json",
-	    processData: false,
-	    success: function(msg) {
-			hide("loading");
-	        console.log("answer success");
-	    }
+	    processData: false
+	}).then(function() {
+		hide("loading");
+        console.log("answer success");
 	});
 }
 
