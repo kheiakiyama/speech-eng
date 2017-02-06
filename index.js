@@ -152,7 +152,7 @@ function start() {
 function calcSpeechMilliSeconds() {
 	var sentenceCount = (question.sentence.split(".").length - 1) + (question.sentence.split(",").length - 1);
 	//return 2000 + sentenceCount * 3000;
-	return 5000;
+	return 7000;
 }
 
 var sendedSpeech = false;
