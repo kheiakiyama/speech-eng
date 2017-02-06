@@ -25,6 +25,10 @@ img {
 #listen,#try {
 	margin-right: 30px;
 }
+#done {
+	margin-left: 100px;
+    position: absolute;
+}
 #output {
 	display: none;
 }

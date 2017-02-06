@@ -100,6 +100,7 @@ function stop() {
 	started = false;
 	show("mic_off");
 	hide("mic_on");
+	hide("done");
 	$('#progress_bar')
 		.removeClass("active")
 		.css('width', '0%');
@@ -110,8 +111,10 @@ function start() {
 		return;
 	}
 	started = true;
+	sendedSpeech = false;
 	hide("mic_off");
 	show("mic_on");
+	show("done");
     var mode = getMode();
     clearText();
     client = Microsoft.CognitiveServices.SpeechRecognition.SpeechRecognitionServiceFactory.createMicrophoneClient(
@@ -124,9 +127,7 @@ function start() {
 		.addClass("active")
 		.css('width', '100%');
     setTimeout(function () {
-        client.endMicAndRecognition();
-		show("loading");
-	    stop();
+    	done();
     }, 5000);
 
     client.onPartialResponseReceived = function (response) {
@@ -144,6 +145,18 @@ function start() {
     client.onError = function (response) {
     	clearText();
     };
+}
+
+var sendedSpeech = false;
+
+function done() {
+	if (sendedSpeech) {
+		return;
+	}
+	sendedSpeech = true;
+	client.endMicAndRecognition();
+	show("loading");
+	stop();
 }
 
 function next() {
