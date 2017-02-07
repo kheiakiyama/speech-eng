@@ -28,11 +28,6 @@ function setText(text) {
     if (json.length > 0) {
     	document.getElementById("user_answer").innerText = json[0].display;
 		sendResult(json[0].display);
-    	if (json[0].display === question.sentence) {
-	    	document.getElementById("result").innerText = "Congratulations!!";
-    	} else {
-	    	document.getElementById("result").innerText = "Oops!";
-    	}
     }
 }
 
@@ -181,9 +176,12 @@ function sendResult(result) {
 	    }),
 		contentType: "application/json",
 	    processData: false
-	}).then(function() {
+	}).always(function() {
 		hide("loading");
         console.log("answer success");
+	}).done(function(data) {
+		console.log(data.cos);
+    	document.getElementById("result").innerText = data.comment;
 	});
 }
 
