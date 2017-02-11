@@ -2,13 +2,14 @@
 var request;
 var index = 0;
 var started = false;
+var key = "";
 
 function getMode() {
     return Microsoft.CognitiveServices.SpeechRecognition.SpeechRecognitionMode.shortPhrase;
 }
 
 function getKey() {
-    return "73a0f2bbad2548428435f980818c4239";
+    return key;
 }
 
 function getLanguage() {
@@ -189,4 +190,21 @@ function listen() {
 	player.play();
 }
 
-setNextQuestion();
+function initialize(callback) {
+	show("loading");
+	$.ajax({
+	    url: "https://speech-eng.azurewebsites.net/api/oxfordkey",
+	    type: "get",
+		contentType: "application/json",
+	    processData: false
+	}).always(function() {
+		hide("loading");
+	}).done(function(data) {
+		key = data;
+		callback();
+	});
+}
+
+initialize(function () {
+	setNextQuestion();
+});
