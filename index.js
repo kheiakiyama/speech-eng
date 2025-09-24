@@ -128,6 +128,7 @@ function start() {
 		},
 		function (err) {
             console.log(err);
+			clearText();
 			recognizer.close();
 			recognizer = undefined;
 		}
