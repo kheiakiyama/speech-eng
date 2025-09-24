@@ -163,7 +163,7 @@ function next() {
 
 function sendResult(result) {
 	$.ajax({
-	    url: "https://speech-eng.azurewebsites.net/api/questions",
+	    url: "https://speech-eng.azurewebsites.net/api/answers",
 	    type: "post",
 	    data: JSON.stringify({
 	    	id: question.id,
