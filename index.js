@@ -25,11 +25,8 @@ function clearText() {
 
 function setText(text) {
     document.getElementById("output").value += text;
-    var json = JSON.parse(text);
-    if (json.length > 0) {
-    	document.getElementById("user_answer").innerText = json[0].display;
-		sendResult(json[0].display);
-    }
+	document.getElementById("user_answer").innerText = text;
+	sendResult(text);
 }
 
 var currentTimeStamp = new Date();
