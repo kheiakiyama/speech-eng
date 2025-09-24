@@ -1,15 +1,15 @@
-﻿var client;
-var request;
-var index = 0;
+﻿var index = 0;
 var started = false;
 var key = "";
-
-function getMode() {
-    return Microsoft.CognitiveServices.SpeechRecognition.SpeechRecognitionMode.shortPhrase;
-}
+var SpeechSDK;
+var synthesizer;
 
 function getKey() {
     return key;
+}
+
+function getRegion() {
+    return "japaneast";
 }
 
 function getLanguage() {
@@ -74,6 +74,7 @@ function setNextQuestion() {
 		                "#36A2EB",
 		                "#FF6384"
 		            ]
+					
 		    	}]
 		    },
 		    animation:{
@@ -112,13 +113,28 @@ function start() {
 	hide("mic_off");
 	show("mic_on");
 	show("done");
-    var mode = getMode();
     clearText();
-    client = Microsoft.CognitiveServices.SpeechRecognition.SpeechRecognitionServiceFactory.createMicrophoneClient(
-        mode,
-        getLanguage(),
-        getKey());
-    client.startMicAndRecognition();
+	var speechConfig = SpeechSDK.SpeechConfig.fromSubscription(getKey(), getRegion());
+	speechConfig.speechRecognitionLanguage = getLanguage();
+	synthesizer = new SpeechSDK.SpeechSynthesizer(speechConfig);
+
+	synthesizer.speakTextAsync(
+		inputText,
+		function (result) {
+            console.log(result);
+            if (result.reason === SpeechSDK.ResultReason.SynthesizingAudioCompleted) {
+       			setText(inputText);
+            } else if (result.reason === SpeechSDK.ResultReason.Canceled) {
+ 				clearText();
+            }
+			synthesizer.close();
+			synthesizer = undefined;
+		},
+		function (err) {
+			synthesizer.close();
+			synthesizer = undefined;
+		}
+	);
 	document.getElementById("result").innerText = "(Start!!)";
 	$('#progress_bar')
 //		.attr('transition-duration', (calcSpeechMilliSeconds() / 1000) + 's')
@@ -127,22 +143,6 @@ function start() {
     setTimeout(function () {
     	done();
     }, calcSpeechMilliSeconds());
-
-    client.onPartialResponseReceived = function (response) {
-        setText(response);
-    }
-
-    client.onFinalResponseReceived = function (response) {
-        setText(JSON.stringify(response));
-    }
-
-    client.onIntentReceived = function (response) {
-        setText(response);
-    };
-
-    client.onError = function (response) {
-    	clearText();
-    };
 }
 
 function calcSpeechMilliSeconds() {
@@ -158,7 +158,6 @@ function done() {
 		return;
 	}
 	sendedSpeech = true;
-	client.endMicAndRecognition();
 	show("loading");
 	stop();
 }
@@ -205,6 +204,11 @@ function initialize(callback) {
 	});
 }
 
-initialize(function () {
-	setNextQuestion();
+document.addEventListener("DOMContentLoaded", function () {
+	if (!!window.SpeechSDK) {
+		SpeechSDK = window.SpeechSDK;
+	}
+	initialize(function () {
+		setNextQuestion();
+	});
 });
