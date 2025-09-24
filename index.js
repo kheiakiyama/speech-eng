@@ -119,19 +119,17 @@ function start() {
 
 	var audioConfig  = SpeechSDK.AudioConfig.fromDefaultMicrophoneInput();
 	recognizer = new SpeechSDK.SpeechRecognizer(speechConfig, audioConfig);
-	synthesizer = new SpeechSDK.SpeechSynthesizer(speechConfig);
-
 	recognizer.recognizeOnceAsync(
 		function (result) {
             console.log(result);
 			setText(result.text);
-			synthesizer.close();
-			synthesizer = undefined;
+			recognizer.close();
+			recognizer = undefined;
 		},
 		function (err) {
             console.log(err);
-			synthesizer.close();
-			synthesizer = undefined;
+			recognizer.close();
+			recognizer = undefined;
 		}
 	);
 	document.getElementById("result").innerText = "(Start!!)";
