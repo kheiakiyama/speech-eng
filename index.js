@@ -2,7 +2,7 @@
 var started = false;
 var key = "";
 var SpeechSDK;
-var synthesizer;
+var recognizer;
 
 function getKey() {
     return key;
@@ -116,21 +116,20 @@ function start() {
     clearText();
 	var speechConfig = SpeechSDK.SpeechConfig.fromSubscription(getKey(), getRegion());
 	speechConfig.speechRecognitionLanguage = getLanguage();
+
+	var audioConfig  = SpeechSDK.AudioConfig.fromDefaultMicrophoneInput();
+	recognizer = new SpeechSDK.SpeechRecognizer(speechConfig, audioConfig);
 	synthesizer = new SpeechSDK.SpeechSynthesizer(speechConfig);
 
-	synthesizer.speakTextAsync(
-		inputText,
+	recognizer.recognizeOnceAsync(
 		function (result) {
             console.log(result);
-            if (result.reason === SpeechSDK.ResultReason.SynthesizingAudioCompleted) {
-       			setText(inputText);
-            } else if (result.reason === SpeechSDK.ResultReason.Canceled) {
- 				clearText();
-            }
+			setText(result.text);
 			synthesizer.close();
 			synthesizer = undefined;
 		},
 		function (err) {
+            console.log(err);
 			synthesizer.close();
 			synthesizer = undefined;
 		}
