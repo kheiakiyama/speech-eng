@@ -197,7 +197,7 @@ function initialize(callback) {
 	}).always(function() {
 		hide("loading");
 	}).done(function(data) {
-		key = data;
+		key = data.key;
 		callback();
 	});
 }
