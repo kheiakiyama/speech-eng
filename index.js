@@ -1,15 +1,15 @@
-﻿var client;
-var request;
-var index = 0;
+﻿var index = 0;
 var started = false;
 var key = "";
-
-function getMode() {
-    return Microsoft.CognitiveServices.SpeechRecognition.SpeechRecognitionMode.shortPhrase;
-}
+var SpeechSDK;
+var recognizer;
 
 function getKey() {
     return key;
+}
+
+function getRegion() {
+    return "japaneast";
 }
 
 function getLanguage() {
@@ -25,11 +25,8 @@ function clearText() {
 
 function setText(text) {
     document.getElementById("output").value += text;
-    var json = JSON.parse(text);
-    if (json.length > 0) {
-    	document.getElementById("user_answer").innerText = json[0].display;
-		sendResult(json[0].display);
-    }
+	document.getElementById("user_answer").innerText = text;
+	sendResult(text);
 }
 
 var currentTimeStamp = new Date();
@@ -74,6 +71,7 @@ function setNextQuestion() {
 		                "#36A2EB",
 		                "#FF6384"
 		            ]
+					
 		    	}]
 		    },
 		    animation:{
@@ -112,13 +110,26 @@ function start() {
 	hide("mic_off");
 	show("mic_on");
 	show("done");
-    var mode = getMode();
     clearText();
-    client = Microsoft.CognitiveServices.SpeechRecognition.SpeechRecognitionServiceFactory.createMicrophoneClient(
-        mode,
-        getLanguage(),
-        getKey());
-    client.startMicAndRecognition();
+	var speechConfig = SpeechSDK.SpeechConfig.fromSubscription(getKey(), getRegion());
+	speechConfig.speechRecognitionLanguage = getLanguage();
+
+	var audioConfig  = SpeechSDK.AudioConfig.fromDefaultMicrophoneInput();
+	recognizer = new SpeechSDK.SpeechRecognizer(speechConfig, audioConfig);
+	recognizer.recognizeOnceAsync(
+		function (result) {
+            console.log(result);
+			setText(result.text);
+			recognizer.close();
+			recognizer = undefined;
+		},
+		function (err) {
+            console.log(err);
+			clearText();
+			recognizer.close();
+			recognizer = undefined;
+		}
+	);
 	document.getElementById("result").innerText = "(Start!!)";
 	$('#progress_bar')
 //		.attr('transition-duration', (calcSpeechMilliSeconds() / 1000) + 's')
@@ -127,22 +138,6 @@ function start() {
     setTimeout(function () {
     	done();
     }, calcSpeechMilliSeconds());
-
-    client.onPartialResponseReceived = function (response) {
-        setText(response);
-    }
-
-    client.onFinalResponseReceived = function (response) {
-        setText(JSON.stringify(response));
-    }
-
-    client.onIntentReceived = function (response) {
-        setText(response);
-    };
-
-    client.onError = function (response) {
-    	clearText();
-    };
 }
 
 function calcSpeechMilliSeconds() {
@@ -158,7 +153,6 @@ function done() {
 		return;
 	}
 	sendedSpeech = true;
-	client.endMicAndRecognition();
 	show("loading");
 	stop();
 }
@@ -169,7 +163,7 @@ function next() {
 
 function sendResult(result) {
 	$.ajax({
-	    url: "https://speech-eng.azurewebsites.net/api/questions",
+	    url: "https://speech-eng.azurewebsites.net/api/answers",
 	    type: "post",
 	    data: JSON.stringify({
 	    	id: question.id,
@@ -200,11 +194,16 @@ function initialize(callback) {
 	}).always(function() {
 		hide("loading");
 	}).done(function(data) {
-		key = data;
+		key = data.key;
 		callback();
 	});
 }
 
-initialize(function () {
-	setNextQuestion();
+document.addEventListener("DOMContentLoaded", function () {
+	if (!!window.SpeechSDK) {
+		SpeechSDK = window.SpeechSDK;
+	}
+	initialize(function () {
+		setNextQuestion();
+	});
 });
